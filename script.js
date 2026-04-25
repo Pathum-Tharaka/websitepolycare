@@ -118,6 +118,14 @@ window.addEventListener('load', revealOnScroll);
 const contactForm = document.getElementById('contactForm');
 contactForm.addEventListener('submit', (e) => {
   e.preventDefault();
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const message = document.getElementById('message').value;
+
+  const subject = encodeURIComponent('Contact from ' + name + ' - SmartPharma Website');
+  const body = encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + message);
+  window.open('mailto:pathumtharaka75@outlook.com?subject=' + subject + '&body=' + body, '_self');
+
   const btn = contactForm.querySelector('button[type="submit"]');
   const original = btn.innerHTML;
   btn.innerHTML = '&#10003; Message Sent!';
