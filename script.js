@@ -114,25 +114,39 @@ function revealOnScroll() {
 window.addEventListener('scroll', revealOnScroll);
 window.addEventListener('load', revealOnScroll);
 
-/* ===== Contact Form ===== */
+/* ===== Contact Form (Web3Forms) ===== */
 const contactForm = document.getElementById('contactForm');
-contactForm.addEventListener('submit', (e) => {
+contactForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const name = document.getElementById('name').value;
-  const email = document.getElementById('email').value;
-  const message = document.getElementById('message').value;
-
-  const subject = encodeURIComponent('Contact from ' + name + ' - SmartPharma Website');
-  const body = encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\nMessage:\n' + message);
-  window.open('mailto:pathumtharaka75@outlook.com?subject=' + subject + '&body=' + body, '_self');
-
   const btn = contactForm.querySelector('button[type="submit"]');
   const original = btn.innerHTML;
-  btn.innerHTML = '&#10003; Message Sent!';
-  btn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+  btn.innerHTML = 'Sending...';
+  btn.disabled = true;
+
+  try {
+    const formData = new FormData(contactForm);
+    const response = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: formData,
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      btn.innerHTML = '&#10003; Message Sent!';
+      btn.style.background = 'linear-gradient(135deg,#22c55e,#16a34a)';
+      contactForm.reset();
+    } else {
+      btn.innerHTML = '&#10007; Failed. Try again.';
+      btn.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
+    }
+  } catch (err) {
+    btn.innerHTML = '&#10007; Error. Try again.';
+    btn.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
+  }
+
   setTimeout(() => {
     btn.innerHTML = original;
     btn.style.background = '';
-    contactForm.reset();
-  }, 2500);
+    btn.disabled = false;
+  }, 3000);
 });
